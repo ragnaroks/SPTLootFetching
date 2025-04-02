@@ -11,7 +11,8 @@ namespace SPTLootFetching.AssemblyPatches_EFT__Interactive__LootItem {
 
         [PatchPostfix]
         public static void Postfix (ref EFT.Interactive.LootItem __instance) {
-            _ = __instance.gameObject.AddComponent<LootNameLabelComponent>();
+            if(__instance.gameObject.name.Contains("Clone")){return;}
+            _ = __instance.gameObject.GetOrAddComponent<LootNameLabelComponent>();
         }
     }
 }

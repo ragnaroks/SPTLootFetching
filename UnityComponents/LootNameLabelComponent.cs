@@ -27,6 +27,7 @@ namespace SPTLootFetching.UnityComponents {
         public void OnGUI() {
             if(SPTLootFetchingPlugin.EnableESP?.Value!=true){return;}
             if(this.LootItem==null){return;}
+            if(Camera.main==null){return;}
             Vector3 position = Camera.main.WorldToViewportPoint(this.gameObject.transform.position);
             if(position.x>1F || position.x<0F || position.y>1F || position.y<0F || position.z<0F){return;}
             Vector2 positionUI = new Vector2(){
