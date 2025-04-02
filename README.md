@@ -1,10 +1,10 @@
 ### usage
-focus on the target corpse, follow the interact indicator
+press <kbd>CTRL</kbd>+<kbd>/</kbd> to fetch **loose** loot to your 2 meters in front, also can enable ESP in bepinex configuretion panel
 
 ### compatibility
-check release note for SPT version, works fine with **DynamicMaps** and **TyrianRadar**, but **DynamicMaps** may still shown deleted corpse
+check release note for SPT version, works fine with **DrakiaXYZ-LootRadius**
 
 ### preview
-|before|after|
+|#1|#2|
 |-|-|
-|![before](./assets/snipaste-20250306T200149Z.jpg)|![after](./assets/snipaste-20250306T202300Z.jpg)|
+|![#1](./assets/1.jpg)|![#2](./assets/2.jpg)|
