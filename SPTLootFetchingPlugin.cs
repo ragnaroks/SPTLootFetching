@@ -69,6 +69,11 @@ namespace SPTLootFetching {
             foreach (EFT.Interactive.LootItem lootItem in loots) {
                 lootItem.Shift = Vector3.zero;
                 lootItem.transform.position = position + (UnityEngine.Random.onUnitSphere * 0.5F);
+                if(lootItem is EFT.Interactive.Corpse) {
+                    // fix corpse model far away of position
+                    lootItem.TrackableTransform.localPosition = Vector3.zero;
+                    lootItem.TrackableTransform.localRotation = Quaternion.identity;
+                }
                 yield return new WaitForSeconds(0.1F);// save CPU single core
             }
             NotificationManagerClass.DisplayMessageNotification(String.Concat(loots.Count," loots fetched"));
