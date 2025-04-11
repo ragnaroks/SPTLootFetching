@@ -72,7 +72,7 @@ namespace SPTLootFetching {
                 && !x.Item.IsEmptyStack
             );
             if (distance.HasValue) {
-                loots = loots.FindAll(x=>Vector3.Distance(position, x.transform.position) <= distance);
+                loots = loots.FindAll(x => Vector3.Distance(position, x.transform.position) <= distance);
             }
             _ = this.StartCoroutine(this.TeleportLoots(loots, position));
         }
