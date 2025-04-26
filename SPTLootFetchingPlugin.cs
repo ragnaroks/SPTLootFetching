@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace SPTLootFetching {
-    [BepInPlugin("net.skydust.SPTLootFetchingPlugin", "SPTLootFetchingPlugin", "1.0.2")]
+    [BepInPlugin("net.skydust.SPTLootFetchingPlugin", "SPTLootFetchingPlugin", "1.0.3")]
     [BepInProcess("EscapeFromTarkov")]
     public class SPTLootFetchingPlugin : BaseUnityPlugin {
         public static ConfigEntry<KeyboardShortcut>? Shortcut { get; private set; } = null;
@@ -19,13 +19,16 @@ namespace SPTLootFetching {
 
         public static ConfigEntry<KeyboardShortcut>? Shortcut2 { get; private set; } = null;
 
+        public static ConfigEntry<KeyboardShortcut>? Shortcut3 { get; private set; } = null;
+
         private AssemblyPatches_EFT__Interactive__LootItem.InitPatch? InitPatch { get; set; } = null;
 
         private Boolean IsBusy { get; set; } = false;
 
         protected void Awake () {
-            SPTLootFetchingPlugin.Shortcut = this.Config.Bind<KeyboardShortcut>("config", "shortcut", new KeyboardShortcut(KeyCode.Slash, KeyCode.LeftControl), "press to fetching loose loots in distance range");
-            SPTLootFetchingPlugin.Shortcut2 = this.Config.Bind<KeyboardShortcut>("config", "shortcut-2", new KeyboardShortcut(KeyCode.Comma, KeyCode.LeftControl), "press to fetching loose loots in whole map");
+            SPTLootFetchingPlugin.Shortcut = this.Config.Bind<KeyboardShortcut>("config", "shortcut", new KeyboardShortcut(KeyCode.Comma, KeyCode.LeftControl), "press to fetching loose loots in distance range");
+            SPTLootFetchingPlugin.Shortcut2 = this.Config.Bind<KeyboardShortcut>("config", "shortcut-2", new KeyboardShortcut(KeyCode.Period, KeyCode.LeftControl), "press to fetching loose loots in whole map");
+            SPTLootFetchingPlugin.Shortcut3 = this.Config.Bind<KeyboardShortcut>("config", "shortcut-3", new KeyboardShortcut(KeyCode.Slash, KeyCode.LeftControl), "press to fetching bots in whole map");
             SPTLootFetchingPlugin.Distance = this.Config.Bind<Single>("config", "distance", 256F, new ConfigDescription("will culling if distance above this value", new AcceptableValueRange<Single>(1F, 1024F)));
             SPTLootFetchingPlugin.ESPEnable = this.Config.Bind<Boolean>("ESP", "enable", false, String.Empty);
             SPTLootFetchingPlugin.ESPColor = this.Config.Bind<Color>("ESP", "color", new Color(94, 230, 144), "loot name color, apply in next raid");
@@ -48,6 +51,10 @@ namespace SPTLootFetching {
                 this.FetchInRange(null);
                 return;
             }
+            if (SPTLootFetchingPlugin.Shortcut3?.Value.IsUp() == true) {
+                this.FetchBots();
+                return;
+            }
         }
 
         protected void OnDestroy () {
@@ -56,11 +63,12 @@ namespace SPTLootFetching {
         }
 
         private void FetchInRange (Single? distance) {
+            if (this.IsBusy) { return; }
             if (Comfort.Common.Singleton<EFT.GameWorld>.Instance == null) { return; }
             EFT.GameWorld gameWorld = Comfort.Common.Singleton<EFT.GameWorld>.Instance;
             if (gameWorld.MainPlayer == null) { return; }
             this.IsBusy = true;
-            Vector3 position = gameWorld.MainPlayer.Transform.TransformPoint(new Vector3(0F, 1F, 2F));
+            Vector3 position = gameWorld.MainPlayer.Transform.TransformPoint(new Vector3(2F, 1F, 2F));
             List<EFT.Interactive.LootItem> loots = gameWorld.LootItems.list_0.FindAll(
                 x => x.isActiveAndEnabled
                 /*
@@ -89,6 +97,32 @@ namespace SPTLootFetching {
                 yield return new WaitForSeconds(0.1F);// save CPU single core
             }
             NotificationManagerClass.DisplayMessageNotification(String.Concat(loots.Count, " loots fetched"));
+            this.IsBusy = false;
+            yield break;
+        }
+
+        private void FetchBots () {
+            if (Comfort.Common.Singleton<EFT.GameWorld>.Instance == null) { return; }
+            EFT.GameWorld gameWorld = Comfort.Common.Singleton<EFT.GameWorld>.Instance;
+            if (gameWorld.MainPlayer == null) { return; }
+            this.IsBusy = true;
+            Vector3 position = gameWorld.MainPlayer.Transform.TransformPoint(new Vector3(2F, 0.5F, 2F));
+            EFT.Player singleBot = gameWorld.AllAlivePlayersList.Find(
+                x => x.ProfileId != gameWorld.MainPlayer.ProfileId
+                && !x.IsYourPlayer
+                && x.IsAI
+                && x.GetComponent<EFT.Interactive.Corpse>() == null
+                && x.GetComponent<EFT.LocalPlayer>() != null
+            );            
+            _ = this.StartCoroutine(this.TeleportBots(new List<EFT.Player>{singleBot}, position));
+        }
+
+        private IEnumerator TeleportBots (List<EFT.Player> bots, Vector3 position) {
+            foreach (EFT.Player bot in bots) {
+                bot.Teleport(position);
+                yield return new WaitForSeconds(0.1F);// save CPU single core
+            }
+            NotificationManagerClass.DisplayMessageNotification(String.Concat(bots.Count, " bots fetched"));
             this.IsBusy = false;
             yield break;
         }
