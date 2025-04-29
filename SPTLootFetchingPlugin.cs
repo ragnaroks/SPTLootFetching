@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using EFT;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -68,19 +69,18 @@ namespace SPTLootFetching {
             EFT.GameWorld gameWorld = Comfort.Common.Singleton<EFT.GameWorld>.Instance;
             if (gameWorld.MainPlayer == null) { return; }
             this.IsBusy = true;
-            Vector3 position = gameWorld.MainPlayer.Transform.TransformPoint(new Vector3(2F, 1F, 2F));
+            Vector3 position = gameWorld.MainPlayer.Transform.TransformPoint(new Vector3(0F, 1F, 2F));
             List<EFT.Interactive.LootItem> loots = gameWorld.LootItems.list_0.FindAll(
                 x => x.isActiveAndEnabled
-                /*
-                 * cause OutOfRangeException
-                 * && x.IsVisibilityEnabled 
-                */
+                // cause OutOfRangeException
+                // && x.IsVisibilityEnabled
                 && x.IsValidForProfile(gameWorld.MainPlayer.ProfileId)
                 && !x.Item.QuestItem
                 && !x.Item.IsEmptyStack
             );
             if (distance.HasValue) {
-                loots = loots.FindAll(x => Vector3.Distance(position, x.transform.position) <= distance);
+                // loots = loots.FindAll(x => Vector3.Distance(position, x.transform.position) <= distance);
+                loots = loots.FindAll(x => (x.transform.position - position).sqrMagnitude <= distance * distance);
             }
             _ = this.StartCoroutine(this.TeleportLoots(loots, position));
         }
@@ -106,23 +106,32 @@ namespace SPTLootFetching {
             EFT.GameWorld gameWorld = Comfort.Common.Singleton<EFT.GameWorld>.Instance;
             if (gameWorld.MainPlayer == null) { return; }
             this.IsBusy = true;
-            Vector3 position = gameWorld.MainPlayer.Transform.TransformPoint(new Vector3(2F, 0.5F, 2F));
-            EFT.Player singleBot = gameWorld.AllAlivePlayersList.Find(
+            Vector3 position = gameWorld.MainPlayer.Transform.TransformPoint(new Vector3(0F, 1F, 2F));
+            EFT.Player? singleBot = gameWorld.AllAlivePlayersList.Find(
                 x => x.ProfileId != gameWorld.MainPlayer.ProfileId
                 && !x.IsYourPlayer
                 && x.IsAI
+                && x.gameObject.activeInHierarchy
+                //&& x.GetComponent<EFT.EftGamePlayerOwner>()
                 && x.GetComponent<EFT.Interactive.Corpse>() == null
                 && x.GetComponent<EFT.LocalPlayer>() != null
-            );            
-            _ = this.StartCoroutine(this.TeleportBots(new List<EFT.Player>{singleBot}, position));
+                && x.GetComponent<EFT.BotOwner>() != null
+            );
+            if(singleBot==null){
+                this.IsBusy = false;
+                return;
+            }
+            _ = this.StartCoroutine(this.TeleportBots(new List<EFT.Player> { singleBot }, position));
         }
 
         private IEnumerator TeleportBots (List<EFT.Player> bots, Vector3 position) {
             foreach (EFT.Player bot in bots) {
                 bot.Teleport(position);
+                bot.GetComponent<EFT.BotOwner>().Settings.botDifficulty_0 = BotDifficulty.impossible;
+                NotificationManagerClass.DisplayMessageNotification(String.Concat("bot <",bot.name, "> fetched"));
                 yield return new WaitForSeconds(0.1F);// save CPU single core
             }
-            NotificationManagerClass.DisplayMessageNotification(String.Concat(bots.Count, " bots fetched"));
+            //NotificationManagerClass.DisplayMessageNotification(String.Concat(bots.Count, " bots fetched"));
             this.IsBusy = false;
             yield break;
         }
