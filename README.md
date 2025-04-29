@@ -1,5 +1,5 @@
 ### usage
-press <kbd>CTRL</kbd>+<kbd>/</kbd> to fetch **loose** loot to your 2 meters in front, also can enable ESP in bepinex configuretion panel
+press shortcut to fetch **loose** loot to your nearby positon, also has loot ESP, **check config in bepinex configuretion panel before use**
 
 ### compatibility
 check release note for SPT version, works fine with **DrakiaXYZ-LootRadius**
