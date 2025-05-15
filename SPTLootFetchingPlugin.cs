@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace SPTLootFetching {
-    [BepInPlugin("net.skydust.SPTLootFetchingPlugin", "SPTLootFetchingPlugin", "1.0.3")]
+    [BepInPlugin("net.skydust.SPTLootFetchingPlugin", "SPTLootFetchingPlugin", "1.0.4")]
     [BepInProcess("EscapeFromTarkov")]
     public class SPTLootFetchingPlugin : BaseUnityPlugin {
         public static ConfigEntry<KeyboardShortcut>? Shortcut { get; private set; } = null;
@@ -22,6 +22,8 @@ namespace SPTLootFetching {
 
         public static ConfigEntry<KeyboardShortcut>? Shortcut3 { get; private set; } = null;
 
+        public static Single DefaultDistance{get;} = 256F;
+
         private AssemblyPatches_EFT__Interactive__LootItem.InitPatch? InitPatch { get; set; } = null;
 
         private Boolean IsBusy { get; set; } = false;
@@ -30,7 +32,7 @@ namespace SPTLootFetching {
             SPTLootFetchingPlugin.Shortcut = this.Config.Bind<KeyboardShortcut>("config", "shortcut", new KeyboardShortcut(KeyCode.Comma, KeyCode.LeftControl), "press to fetching loose loots in distance range");
             SPTLootFetchingPlugin.Shortcut2 = this.Config.Bind<KeyboardShortcut>("config", "shortcut-2", new KeyboardShortcut(KeyCode.Period, KeyCode.LeftControl), "press to fetching loose loots in whole map");
             SPTLootFetchingPlugin.Shortcut3 = this.Config.Bind<KeyboardShortcut>("config", "shortcut-3", new KeyboardShortcut(KeyCode.Slash, KeyCode.LeftControl), "press to fetching bots in whole map");
-            SPTLootFetchingPlugin.Distance = this.Config.Bind<Single>("config", "distance", 256F, new ConfigDescription("will culling if distance above this value", new AcceptableValueRange<Single>(1F, 1024F)));
+            SPTLootFetchingPlugin.Distance = this.Config.Bind<Single>("config", "distance", SPTLootFetchingPlugin.DefaultDistance, new ConfigDescription("will culling if distance above this value", new AcceptableValueRange<Single>(1F, 1024F)));
             SPTLootFetchingPlugin.ESPEnable = this.Config.Bind<Boolean>("ESP", "enable", false, String.Empty);
             SPTLootFetchingPlugin.ESPColor = this.Config.Bind<Color>("ESP", "color", new Color(94, 230, 144), "loot name color, apply in next raid");
             this.InitPatch = new AssemblyPatches_EFT__Interactive__LootItem.InitPatch();
@@ -45,7 +47,7 @@ namespace SPTLootFetching {
         protected void Update () {
             if (this.IsBusy) { return; }
             if (SPTLootFetchingPlugin.Shortcut?.Value.IsUp() == true) {
-                this.FetchInRange(SPTLootFetchingPlugin.Distance?.Value ?? 256F);
+                this.FetchInRange(SPTLootFetchingPlugin.Distance?.Value ?? SPTLootFetchingPlugin.DefaultDistance);
                 return;
             }
             if (SPTLootFetchingPlugin.Shortcut2?.Value.IsUp() == true) {
