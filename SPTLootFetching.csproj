@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +27,10 @@
       <HintPath>E:\EscapeFromTarkov@3.11\BepInEx\plugins\spt\spt-reflection.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>E:\EscapeFromTarkov@3.11\EscapeFromTarkov_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>E:\EscapeFromTarkov@3.11\EscapeFromTarkov_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
@@ -35,12 +39,8 @@
       <HintPath>E:\EscapeFromTarkov@3.11\EscapeFromTarkov_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>E:\EscapeFromTarkov@3.11\EscapeFromTarkov_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>E:\EscapeFromTarkov@3.11\EscapeFromTarkov_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>E:\EscapeFromTarkov@3.11\EscapeFromTarkov_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
