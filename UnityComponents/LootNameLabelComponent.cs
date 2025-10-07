@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EFT;
+using EFT.Interactive;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -23,6 +25,7 @@ namespace SPTLootFetching.UnityComponents {
             this.LabelComponent.alignment = TextAlignmentOptions.Center;
             this.LabelComponent.maxVisibleCharacters = 16;
             this.LabelComponent.maxVisibleLines = 1;
+            this.LabelComponent.richText = false;
             this.LabelComponent.color = color;
             this.LabelComponent.fontSize = 0.5F;
             this.LabelComponent.enableAutoSizing = false;
@@ -37,9 +40,20 @@ namespace SPTLootFetching.UnityComponents {
 
         //public void Start () {}
 
-        //public void Update () {}
+        public void Update () {
+            Boolean active;
+            if(this.gameObject.GetComponent<Corpse>()!=null && this.gameObject.GetComponent<BotOwner>() != null) {
+                active = true;
+            } else {
+                active = this.gameObject.GetComponent<ObservedLootItem>()?.enabled==true;
+            }
+            if (this.LabelObject.activeSelf!=active) {
+                this.LabelObject.SetActive(active);
+            }            
+        }
 
         public void LateUpdate () {
+            if(!this.LabelObject.activeSelf){return;}
             if(this.LabelComponent==null || Camera.main==null){return;}
             Single limit = SPTLootFetchingPlugin.Distance?.Value ?? SPTLootFetchingPlugin.DefaultDistance;
             //Vector3 vector = this.gameObject.transform.position - Camera.main.gameObject.transform.position;
@@ -53,7 +67,7 @@ namespace SPTLootFetching.UnityComponents {
         public void OnDestroy () {
             this.LootItem = null;
             this.LabelComponent = null;
-            this.LabelObject.DestroyAllChildren();
+            this.LabelObject?.DestroyAllChildren();
         }
     }
 }
