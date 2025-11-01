@@ -3,44 +3,44 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>1.0.6</Version>
+    <Version>1.0.7</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>E:\EscapeFromTarkov@3.11\EscapeFromTarkov_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>E:\EscapeFromTarkov@4.0\EscapeFromTarkov_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>E:\EscapeFromTarkov@3.11\BepInEx\core\BepInEx.dll</HintPath>
+      <HintPath>E:\EscapeFromTarkov@4.0\BepInEx\core\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Comfort">
-      <HintPath>E:\EscapeFromTarkov@3.11\EscapeFromTarkov_Data\Managed\Comfort.dll</HintPath>
+      <HintPath>E:\EscapeFromTarkov@4.0\EscapeFromTarkov_Data\Managed\Comfort.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Comfort.Unity">
-      <HintPath>E:\EscapeFromTarkov@3.11\EscapeFromTarkov_Data\Managed\Comfort.Unity.dll</HintPath>
+      <HintPath>E:\EscapeFromTarkov@4.0\EscapeFromTarkov_Data\Managed\Comfort.Unity.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="spt-reflection">
-      <HintPath>E:\EscapeFromTarkov@3.11\BepInEx\plugins\spt\spt-reflection.dll</HintPath>
+      <HintPath>E:\EscapeFromTarkov@4.0\BepInEx\plugins\spt\spt-reflection.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>E:\EscapeFromTarkov@3.11\EscapeFromTarkov_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>E:\EscapeFromTarkov@4.0\EscapeFromTarkov_Data\Managed\Unity.TextMeshPro.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>E:\EscapeFromTarkov@3.11\EscapeFromTarkov_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>E:\EscapeFromTarkov@4.0\EscapeFromTarkov_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>E:\EscapeFromTarkov@3.11\EscapeFromTarkov_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>E:\EscapeFromTarkov@4.0\EscapeFromTarkov_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>E:\EscapeFromTarkov@3.11\EscapeFromTarkov_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>E:\EscapeFromTarkov@4.0\EscapeFromTarkov_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

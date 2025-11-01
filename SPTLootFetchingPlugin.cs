@@ -7,7 +7,7 @@ using System.Linq;
 using UnityEngine;
 
 namespace SPTLootFetching {
-    [BepInPlugin("net.skydust.SPTLootFetchingPlugin", "SPTLootFetchingPlugin", "1.0.5")]
+    [BepInPlugin("net.skydust.SPTLootFetchingPlugin", "SPTLootFetchingPlugin", "1.0.7")]
     [BepInProcess("EscapeFromTarkov")]
     public class SPTLootFetchingPlugin : BaseUnityPlugin {
         public static Single DefaultDistance { get; } = 256F;
@@ -146,7 +146,7 @@ namespace SPTLootFetching {
             if (gameWorld.MainPlayer == null) { return; }
             this.IsBusy = true;
             Vector3 position = gameWorld.MainPlayer.Transform.TransformPoint(new Vector3(0F, 1F, 2F));
-            IEnumerable<EFT.Interactive.LootItem> loots = gameWorld.LootItems.list_0.Where(
+            IEnumerable<EFT.Interactive.LootItem> loots = gameWorld.LootItems.List_0.Where(
                 x => x.isActiveAndEnabled
                 // cause OutOfRangeException
                 // && x.IsVisibilityEnabled
