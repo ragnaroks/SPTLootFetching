@@ -7,7 +7,7 @@ using System.Linq;
 using UnityEngine;
 
 namespace SPTLootFetching {
-    [BepInPlugin("net.skydust.SPTLootFetchingPlugin", "SPTLootFetchingPlugin", "1.0.7")]
+    [BepInPlugin("net.skydust.sptlootfetchingp", "SPTLootFetchingPlugin", "1.0.7")]
     [BepInProcess("EscapeFromTarkov")]
     public class SPTLootFetchingPlugin : BaseUnityPlugin {
         public static Single DefaultDistance { get; } = 256F;
@@ -30,13 +30,13 @@ namespace SPTLootFetching {
 
         public static ConfigEntry<KeyboardShortcut>? Shortcut5 { get; private set; } = null;
 
-        private AssemblyPatches_EFT__Interactive__LootItem.InitPatch? InitPatch { get; set; } = null;
+        private AssemblyPatches_EFT__Interactive__LootItem.InitPatch InitPatch { get; } = new AssemblyPatches_EFT__Interactive__LootItem.InitPatch();
 
-        private AssemblyPatches_EFT__Interactive__LootItem.CreateStaticLootPatch? CreateStaticLootPatch { get; set; } = null;
+        private AssemblyPatches_EFT__Interactive__LootItem.CreateStaticLootPatch CreateStaticLootPatch { get; } = new AssemblyPatches_EFT__Interactive__LootItem.CreateStaticLootPatch();
 
-        private AssemblyPatches_EFT__Interactive__LootItem.CreateLootWithRigidbodyPatch? CreateLootWithRigidbodyPatch { get; set; } = null;
+        private AssemblyPatches_EFT__Interactive__LootItem.CreateLootWithRigidbodyPatch CreateLootWithRigidbodyPatch { get; } = new AssemblyPatches_EFT__Interactive__LootItem.CreateLootWithRigidbodyPatch();
 
-        private AssemblyPatches_EFT__Interactive__LootItem.CreateStationaryWeaponPatch? CreateStationaryWeaponPatch { get; set; } = null;
+        private AssemblyPatches_EFT__Interactive__LootItem.CreateStationaryWeaponPatch CreateStationaryWeaponPatch { get; } = new AssemblyPatches_EFT__Interactive__LootItem.CreateStationaryWeaponPatch();
 
         private Boolean IsBusy { get; set; } = false;
 
@@ -92,18 +92,14 @@ namespace SPTLootFetching {
                 new KeyboardShortcut(KeyCode.Keypad5, KeyCode.LeftControl),
                 "teleport you to lighthouse area, only work in lighthouse map"
             );
-            //this.CreateStaticLootPatch = new AssemblyPatches_EFT__Interactive__LootItem.CreateStaticLootPatch();
-            //this.CreateLootWithRigidbodyPatch = new AssemblyPatches_EFT__Interactive__LootItem.CreateLootWithRigidbodyPatch();
-            //this.CreateStationaryWeaponPatch = new AssemblyPatches_EFT__Interactive__LootItem.CreateStationaryWeaponPatch();
-            this.InitPatch = new AssemblyPatches_EFT__Interactive__LootItem.InitPatch();
             this.Logger.LogDebug("plugin loaded");
         }
 
         protected void Start () {
-            //this.CreateStaticLootPatch?.Enable();
-            //this.CreateLootWithRigidbodyPatch?.Enable();
-            //this.CreateStationaryWeaponPatch?.Enable();
-            this.InitPatch?.Enable();
+            //this.CreateStaticLootPatch.Enable();
+            //this.CreateLootWithRigidbodyPatch.Enable();
+            //this.CreateStationaryWeaponPatch.Enable();
+            this.InitPatch.Enable();
             this.Logger.LogDebug("plugin actived");
         }
 
@@ -132,10 +128,10 @@ namespace SPTLootFetching {
         }
 
         protected void OnDestroy () {
-            //this.CreateStaticLootPatch?.Disable();
-            //this.CreateLootWithRigidbodyPatch?.Disable();
-            //this.CreateStationaryWeaponPatch?.Disable();
-            this.InitPatch?.Disable();
+            //this.CreateStaticLootPatch.Disable();
+            //this.CreateLootWithRigidbodyPatch.Disable();
+            //this.CreateStationaryWeaponPatch.Disable();
+            this.InitPatch.Disable();
             this.Logger.LogDebug("plugin deactived");
         }
 

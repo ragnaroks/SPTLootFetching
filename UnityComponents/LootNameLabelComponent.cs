@@ -6,14 +6,18 @@ using UnityEngine;
 
 namespace SPTLootFetching.UnityComponents {
     public class LootNameLabelComponent : MonoBehaviour {
-        private EFT.Interactive.LootItem? LootItem { get; set; } = null;
+        private LootItem? LootItem { get; set; } = null;
 
         private GameObject LabelObject{get;set;} = new GameObject();
 
         private TextMeshPro? LabelComponent{get;set;} = null;
 
         public void Awake () {
-            this.LootItem = this.gameObject.GetComponentInParent<EFT.Interactive.LootItem>();
+            this.LootItem = this.gameObject.GetComponentInParent<LootItem>();
+        }
+
+        public void Start () {
+            if(this.LootItem==null){return;}
             String lootName = String.Concat("<", String.IsNullOrWhiteSpace(this.LootItem.Name.Localized()) ? this.LootItem.Name : this.LootItem.Name.Localized(), ">");
             this.LabelObject.name = String.Concat("LootNameLabelObject",lootName);
             this.LabelObject.transform.SetParent(this.gameObject.transform);
@@ -38,36 +42,29 @@ namespace SPTLootFetching.UnityComponents {
             this.LabelComponent.autoSizeTextContainer = true;
         }
 
-        //public void Start () {}
+        //public void Update () {}
 
-        public void Update () {
+        public void LateUpdate () {
+            if(this.LabelComponent==null || Camera.main==null){return;}
             Boolean active;
             if(this.gameObject.GetComponent<Corpse>()!=null && this.gameObject.GetComponent<BotOwner>() != null) {
                 active = true;
             } else {
                 active = this.gameObject.GetComponent<ObservedLootItem>()?.enabled==true;
             }
-            if (this.LabelObject.activeSelf!=active) {
-                this.LabelObject.SetActive(active);
-            }            
-        }
-
-        public void LateUpdate () {
-            if(!this.LabelObject.activeSelf){return;}
-            if(this.LabelComponent==null || Camera.main==null){return;}
+            this.LabelObject.SetActive(active);
+            if (!active) {return;}
             Single limit = SPTLootFetchingPlugin.Distance?.Value ?? SPTLootFetchingPlugin.DefaultDistance;
-            //Vector3 vector = this.gameObject.transform.position - Camera.main.gameObject.transform.position;
-            Single vector = Vector3.Distance(this.gameObject.transform.position,Camera.main.gameObject.transform.position);
-            //if (limit <= 0 || vector.sqrMagnitude > limit * limit) {return;}
-            if (limit <= 0 || vector > limit) {return;}
+            Single distance = Vector3.Distance(this.gameObject.transform.position,Camera.main.gameObject.transform.position);
+            if (limit <= 0 || distance > limit) {return;}
             this.LabelComponent.transform.rotation = Camera.main.gameObject.transform.rotation;
-            this.LabelComponent.fontSize = 0.5F + (vector * 0.10625F);
+            this.LabelComponent.fontSize = 0.5F + (distance * 0.0625F);
         }
 
         public void OnDestroy () {
             this.LootItem = null;
             this.LabelComponent = null;
-            this.LabelObject?.DestroyAllChildren();
+            if(this.gameObject!=null){ Destroy(this.gameObject); }
         }
     }
 }
