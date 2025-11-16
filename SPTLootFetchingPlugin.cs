@@ -7,13 +7,9 @@ using System.Linq;
 using UnityEngine;
 
 namespace SPTLootFetching {
-    [BepInPlugin("net.skydust.sptlootfetchingp", "SPTLootFetchingPlugin", "1.0.7")]
+    [BepInPlugin("net.skydust.sptlootfetchingp", "SPTLootFetchingPlugin", "1.0.8")]
     [BepInProcess("EscapeFromTarkov")]
     public class SPTLootFetchingPlugin : BaseUnityPlugin {
-        public static Single DefaultDistance { get; } = 256F;
-
-        public static Color DefaultEspColor { get; } = new Color(94, 230, 144);
-
         public static ConfigEntry<KeyboardShortcut>? Shortcut1 { get; private set; } = null;
 
         public static ConfigEntry<KeyboardShortcut>? Shortcut2 { get; private set; } = null;
@@ -21,8 +17,6 @@ namespace SPTLootFetching {
         public static ConfigEntry<Single>? Distance { get; private set; } = null;
 
         public static ConfigEntry<Boolean>? ESPEnable { get; private set; } = null;
-
-        public static ConfigEntry<Color>? ESPColor { get; private set; } = null;
 
         public static ConfigEntry<KeyboardShortcut>? Shortcut3 { get; private set; } = null;
 
@@ -56,7 +50,7 @@ namespace SPTLootFetching {
             SPTLootFetchingPlugin.Distance = this.Config.Bind<Single>(
                 "general",
                 "distance",
-                SPTLootFetchingPlugin.DefaultDistance,
+                32F,
                 new ConfigDescription(
                     "will culling if distance above this value",
                     new AcceptableValueRange<Single>(1F, 1024F)
@@ -65,14 +59,8 @@ namespace SPTLootFetching {
             SPTLootFetchingPlugin.ESPEnable = this.Config.Bind<Boolean>(
                 "general",
                 "esp-enable",
-                false,
+                true,
                 String.Empty
-            );
-            SPTLootFetchingPlugin.ESPColor = this.Config.Bind<Color>(
-                "general",
-                "esp-color",
-                SPTLootFetchingPlugin.DefaultEspColor,
-                "loot name color, apply in next raid"
             );
             SPTLootFetchingPlugin.Shortcut3 = this.Config.Bind<KeyboardShortcut>(
                 "tools",
@@ -106,7 +94,7 @@ namespace SPTLootFetching {
         protected void Update () {
             if (this.IsBusy) { return; }
             if (SPTLootFetchingPlugin.Shortcut1?.Value.IsUp() == true) {
-                this.FetchInRange(SPTLootFetchingPlugin.Distance?.Value ?? SPTLootFetchingPlugin.DefaultDistance);
+                this.FetchInRange(SPTLootFetchingPlugin.Distance?.Value);
                 return;
             }
             if (SPTLootFetchingPlugin.Shortcut2?.Value.IsUp() == true) {
@@ -136,6 +124,7 @@ namespace SPTLootFetching {
         }
 
         private void FetchInRange (Single? distance) {
+            if(!distance.HasValue || distance<=0F){return;}
             if (this.IsBusy) { return; }
             if (Comfort.Common.Singleton<EFT.GameWorld>.Instance == null) { return; }
             EFT.GameWorld gameWorld = Comfort.Common.Singleton<EFT.GameWorld>.Instance;
